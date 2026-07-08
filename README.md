@@ -1,5 +1,3 @@
-# mimic_iv
-
 # Roadmap triển khai: ICU Clinical Data Platform (MIMIC-IV)
 
 **Mục tiêu:** Xây dựng 1 pipeline/platform end-to-end từ raw MIMIC-IV events đến dashboard phục vụ theo dõi bệnh nhân ICU, đủ để đưa vào portfolio apply vị trí Data Engineer.
