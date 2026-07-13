@@ -1,6 +1,6 @@
 # 🩺 Xây dựng Medallion Feature Store Pipeline từ Bộ Dữ Liệu Lâm Sàng MIMIC-IV
 
-## 🎯 Mục tiêu & Lý do chọn đề tài
+# 🎯 Mục tiêu & Lý do chọn đề tài
 
 **Sứ mệnh dự án** là xây dựng một pipeline dữ liệu theo kiến trúc **Medallion (Bronze → Silver → Gold)** nhằm chuẩn hóa dữ liệu lâm sàng từ MIMIC-IV thành một **Feature Store** có khả năng tái sử dụng cho nhiều bài toán Machine Learning trong y tế.
 
@@ -71,9 +71,9 @@ Pipeline được xây dựng theo mô hình **ELT (Extract - Load - Transform)*
 
 ---
 
-# 🥉 Bronze Layer – Raw Clinical Storage
+## 🥉 Bronze Layer – Raw Clinical Storage
 
-## Mục tiêu
+### Mục tiêu
 
 Bronze là tầng lưu trữ dữ liệu nguyên bản từ MIMIC-IV.
 
@@ -104,7 +104,7 @@ bronze/
 └── procedureevents
 ```
 
-### Lựa chọn DuckDB + Parquet
+#### Lựa chọn DuckDB + Parquet
 
 Dự án sử dụng **DuckDB** kết hợp với **Parquet** để tối ưu hiệu năng trên môi trường Local hoặc Google Colab.
 
@@ -118,15 +118,7 @@ DuckDB được lựa chọn vì:
 Luồng chuyển đổi dữ liệu:
 
 ```text
-CSV.GZ
-
-↓
-
-DuckDB
-
-↓
-
-Partitioned Parquet
+CSV.GZ -> DuckDB -> Partitioned Parquet
 ```
 
 Bronze đóng vai trò là vùng lưu trữ dữ liệu gốc, đảm bảo khả năng truy xuất và tái xử lý khi cần thiết.
