@@ -23,6 +23,7 @@ labevents
 inputevents
 outputevents
 procedureevents
+patients
 ```
 
 Các bảng này chứa gần như toàn bộ thông tin về quá trình điều trị của bệnh nhân trong ICU, từ thông tin nhập viện, dấu hiệu sinh tồn, xét nghiệm, thuốc, dịch truyền cho đến các thủ thuật can thiệp. Thay vì chỉ xây dựng các bảng phân tích (Data Mart), dự án hướng tới việc chuẩn hóa dữ liệu thành các **Feature Group** có thể tái sử dụng cho nhiều mô hình học máy khác nhau.
