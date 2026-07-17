@@ -7,7 +7,7 @@
 ### 1.1. Giới thiệu cấu trúc bảng và ánh xạ mã danh mục
 Tầng Bronze thực hiện nạp dữ liệu nguyên bản từ các file nén `csv.gz` của bộ dữ liệu MIMIC-IV v3.1, thực thi ép kiểu dữ liệu tường minh (Explicit Schema Enforcement Matrix) và xuất bản sang định dạng lưu trữ dạng cột tối ưu **Apache Parquet**. 
 
-Để đọc hiểu các mã định danh sự kiện lâm sàng, tầng này nạp song song hai bảng từ điển tra cứu (Lookup Tables):
+Để đọc hiểu các mã định danh sự kiện lâm sàng, tầng này sử dụng song song hai bảng từ điển tra cứu (Lookup Tables):
 *   `d_items`: Định danh nhãn cho các bảng sự kiện ICU (`chartevents`, `inputevents`, `outputevents`, `procedureevents`).
 *   `d_labitems`: Định danh nhãn cho bảng xét nghiệm tập trung (`labevents`).
 
