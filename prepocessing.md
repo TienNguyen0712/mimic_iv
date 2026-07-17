@@ -1,5 +1,7 @@
 # 📑 TÀI LIỆU ĐẶC TẢ KỸ THUẬT: PIPELINE TIỀN XỬ LÝ & TỔNG HỢP DỮ LIỆU (MEDALLION FEATURE STORE)
 
+---
+
 ## 📊 Các bảng được lựa chọn 
 
 Dự án bao gồm 8 bảng và mỗi bảng sẽ lấy các đặc trưng quan trọng như: 
