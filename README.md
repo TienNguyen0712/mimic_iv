@@ -61,7 +61,7 @@ Hệ thống ứng dụng mô hình **ELT (Extract - Load - Transform)** kết h
 
 ### 🥉 Bronze Layer – Raw Clinical Storage
 *   **Mục tiêu:** Lưu trữ nguyên bản, gán ép kiểu dữ liệu tường minh và chuyển đổi định dạng từ `.csv.gz` sang `.parquet`.
-*   **Kỹ thuật Bucketing:** Áp dụng thuật toán băm khóa định danh bệnh nhân `abs(hash(subject_id)) % 8` để phân rã các bảng sự kiện khổng lồ (`chartevents`, `labevents`) thành 8 phân vùng nhị phân cân bằng, ngăn chặn triệt để lỗi sập nguồn bộ nhớ (Out-of-Memory) khi xử lý tuần tự (Out-of-Core Processing).
+*   **Kỹ thuật Bucketing:** Áp dụng thuật toán băm khóa định danh bệnh nhân `abs(hash(subject_id)) % n` để phân rã các bảng sự kiện khổng lồ (`chartevents`, `labevents`) thành n (n tùy ý) phân vùng nhị phân cân bằng, ngăn chặn triệt để lỗi sập nguồn bộ nhớ (Out-of-Memory) khi xử lý tuần tự (Out-of-Core Processing).
 
 ### 🥈 Silver Layer – Clinical Entity Standardization
 Tập trung làm sạch, lọc nhiễu lâm sàng và chuyển đổi dữ liệu dạng dọc EAV (Entity-Attribute-Value) thành các thực thể phẳng vững chắc:
