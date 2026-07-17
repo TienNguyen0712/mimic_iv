@@ -64,7 +64,7 @@ Các trường thông tin được chuẩn hóa:
     *   *Logic chuyển đổi:* Nếu `itemid = 226730` giữ nguyên; nếu `itemid = 226707` (inch) thì nhân với $2.54$.
 *   `weight_kg` (DOUBLE): Cân nặng chuẩn hóa về đơn vị kilogram.
     *   *Logic chuyển đổi:* Nếu `itemid = 226512` giữ nguyên; nếu `itemid = 226531` (lbs) thì nhân với $0.45359237$.
-*   *Màng lọc nhiễu sinh học (Clinical Outliers):* Loại bỏ các sai số do thiết bị ghi nhận, giới hạn nghiêm ngặt $100 \le \text{height\_cm} \le 250$ và $30 \le \text{weight\_kg} \le 300$.
+*   *Màng lọc nhiễu sinh học (Clinical Outliers):* Loại bỏ các sai số do thiết bị ghi nhận, giới hạn nghiêm ngặt.
 
 ---
 
