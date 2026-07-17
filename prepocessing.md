@@ -128,35 +128,32 @@ Tại tầng Gold, **dbt-duckdb** chịu trách nhiệm biên dịch mã nguồn
                          [patient_feature_store] ◄── [Target Labels Module]
 ```
 ### 3.1. Cấu trúc các Feature Groups Đa cửa sổ (Multi-Window Feature Groups)
-Mỗi chỉ số động sẽ được dbt tạo ra các biến phái sinh bằng cách tính toán khoảng cách thời gian:
+Mỗi chỉ số động sẽ được dbt tạo ra các biến phái sinh bằng cách tính toán khoảng cách thời gian
 
-$$\Delta t = \text{date\_diff}('\text{hour}', \text{icu\_intime}, \text{charttime})$$
+Hệ thống tiến hành gộp dữ liệu (Aggregation) theo 4 cửa sổ lũy tiến
 
-Hệ thống tiến hành gộp dữ liệu (Aggregation) theo 4 cửa sổ lũy tiến: **$\Delta t \le 1\text{h}$**, **$\Delta t \le 6\text{h}$**, **$\Delta t \le 12\text{h}$**, và **$\Delta t \le 24\text{h}$**[cite: 1].
-
-*   **Vital Features Group (`vital_features`):** Tính toán `MIN`, `MAX`, `MEAN` cho từng cửa sổ[cite: 1].
-    *   *Ví dụ cấu trúc cột:* `HR_mean_6h`, `HR_max_6h`, `MAP_min_1h`, `SpO2_min_24h`[cite: 1].
-*   **Laboratory Features Group (`lab_features`):** Do tần suất xét nghiệm thưa hơn, hệ thống sẽ lấy giá trị gần nhất (`LAST_VALUE`) hoặc giá trị cực đại trong cửa sổ thời gian[cite: 1].
-    *   *Ví dụ cấu trúc cột:* `creatinine_max_12h`, `lactate_max_24h`[cite: 1].
-*   **Medication & Fluid Features Group (`medication_features`):** Tính toán tổng liều lượng tích lũy (Sum Amount) và thời gian duy trì thuốc truyền[cite: 1].
-    *   *Ví dụ cấu trúc cột:* `total_vasopressor_dose_24h`, `total_fluid_input_6h`[cite: 1].
-*   **Output Features Group (`output_features`):** Tổng thể tích dịch tiết lũy kế theo giờ để hỗ trợ chấm điểm suy thận KDIGO[cite: 1].
-    *   *Ví dụ cấu trúc cột:* `total_urine_output_6h`, `total_urine_output_24h`[cite: 1].
-*   **Procedure Features Group (`procedure_features`):** Biến phân loại nhị phân (0/1) thể hiện bệnh nhân có đang phải chịu can thiệp xâm lấn trong cửa sổ đó hay không[cite: 1].
-    *   *Ví dụ cấu trúc cột:* `is_ventilated_12h`, `is_dialyzed_24h`[cite: 1].
+*   **Vital Features Group (`vital_features`):** Tính toán `MIN`, `MAX`, `MEAN` cho từng cửa sổ.
+    *   *Ví dụ cấu trúc cột:* `HR_mean_6h`, `HR_max_6h`, `MAP_min_1h`, `SpO2_min_24h`.
+*   **Laboratory Features Group (`lab_features`):** Do tần suất xét nghiệm thưa hơn, hệ thống sẽ lấy giá trị gần nhất (`LAST_VALUE`) hoặc giá trị cực đại trong cửa sổ thời gian.
+    *   *Ví dụ cấu trúc cột:* `creatinine_max_12h`, `lactate_max_24h`.
+*   **Medication & Fluid Features Group (`medication_features`):** Tính toán tổng liều lượng tích lũy (Sum Amount) và thời gian duy trì thuốc truyền.
+    *   *Ví dụ cấu trúc cột:* `total_vasopressor_dose_24h`, `total_fluid_input_6h`.
+*   **Output Features Group (`output_features`):** Tổng thể tích dịch tiết lũy kế theo giờ để hỗ trợ chấm điểm suy thận KDIGO.
+    *   *Ví dụ cấu trúc cột:* `total_urine_output_6h`, `total_urine_output_24h`.
+*   **Procedure Features Group (`procedure_features`):** Biến phân loại nhị phân (0/1) thể hiện bệnh nhân có đang phải chịu can thiệp xâm lấn trong cửa sổ đó hay không.
+    *   *Ví dụ cấu trúc cột:* `is_ventilated_12h`, `is_dialyzed_24h`.
 
 ### 3.2. Module Khởi tạo Nhãn Tự động (Multi-Task Automated Labels Module)
-Để biến bảng phẳng thành một Feature Store phục vụ trực tiếp cho Machine Learning mà **không bị rò rỉ dữ liệu (Data Leakage)**, hệ thống thiết lập cấu phần tạo nhãn mục tiêu ($y$) độc lập song song[cite: 1]:
-*   `label_mortality` (Nhị phân): 1 nếu bệnh nhân có ngày mất `deathtime` nằm trong khoảng thời gian đợt nằm viện này, 0 nếu xuất viện an toàn[cite: 1].
+Để biến bảng phẳng thành một Feature Store phục vụ trực tiếp cho Machine Learning mà **không bị rò rỉ dữ liệu (Data Leakage)**, hệ thống thiết lập cấu phần tạo nhãn mục tiêu ($y$) độc lập song song:
+*   `label_mortality` (Nhị phân): 1 nếu bệnh nhân có ngày mất `deathtime` nằm trong khoảng thời gian đợt nằm viện này, 0 nếu xuất viện an toàn.
 *   `label_sepsis3` (Nhị phân): 1 nếu xuất hiện mốc thời gian nghi ngờ nhiễm khuẩn huyết thỏa mãn đồng thời điều kiện tăng điểm SOFA $\ge 2$ và có kháng sinh kèm cấy máu.
 *   `label_aki_stage` (Đa lớp: 0, 1, 2, 3): Chấm điểm suy thận cấp tự động dựa trên tốc độ sụt giảm nước tiểu (`urine_output_6h`) và tỷ lệ tăng vọt của Creatinine so với mốc nền Silver.
-*   `label_long_los` (Nhị phân): 1 nếu tổng số ngày nằm ICU `los_days > 7` (điều trị kéo dài), 0 nếu $\le 7$ ngày[cite: 1].
+*   `label_long_los` (Nhị phân): 1 nếu tổng số ngày nằm ICU `los_days > 7` (điều trị kéo dài), 0 nếu $\le 7$ ngày.
 
 ### 3.3. Hợp nhất Ma trận phẳng cuối cùng: `patient_feature_store`
-Bước cuối cùng của dbt thực hiện lệnh `LEFT JOIN` tuyệt đối từ bảng nền tĩnh, quét qua toàn bộ các Feature Groups động và tích hợp tập Nhãn mục tiêu[cite: 1]. 
+Bước cuối cùng của dbt thực hiện lệnh `LEFT JOIN` tuyệt đối từ bảng nền tĩnh, quét qua toàn bộ các Feature Groups động và tích hợp tập Nhãn mục tiêu. 
 
-Mỗi dòng trong bảng này đại diện cho **duy nhất một `stay_id`** hoàn chỉnh, sẵn sàng
+Mỗi dòng trong bảng này đại diện cho **duy nhất một `stay_id`** hoàn chỉnh, sẵn sàng nạp trực tiếp vào các thuật toán XGBoost, LightGBM hoặc Scikit-Learn để huấn luyện mô hình học máy mà không cần thực hiện thêm bất kỳ bước biến đổi dữ liệu nào khác.
 
 --- 
 
-Tại tầng Gold, **dbt-duckdb** chịu trách nhiệm biên dịch mã nguồn SQL thành một mạng lưới tính toán Graph (DAG). Tầng này chuyển đổi toàn bộ dữ liệu chuỗi thời gian động ở tầng Silver thành một **Ma trận Đặc trưng Phẳng (Wide Flat Matrix)**, tích lũy theo các cửa sổ thời gian cố định tính từ thời điểm bệnh nhân bắt đầu nhập khoa ICU (`icu_intime`)[cite: 1].
