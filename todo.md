@@ -1,6 +1,10 @@
 Ngày 1: Thực hiện viết README soạn Tech và demo pipeline
 
 Ngày 2: Thực hiện tổ chức thư mục, configs, hoàn thành Tầng Bronze
+
+Ngày 3: Thực hiện triển khai trên local
+
+
 ```
 mimic-feature-store/
 │
