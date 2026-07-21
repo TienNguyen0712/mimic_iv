@@ -88,36 +88,6 @@ mimic-feature-store/
 │   ├── 01_explore_chartevents.ipynb
 │   └── 02_validate_gold_features.ipynb
 │
-├── tests/
-│   ├── conftest.py                 # fixtures dùng chung (duckdb connection tạm, sample data)
-│   ├── fixtures/
-│   │   ├── sample_admissions.csv
-│   │   ├── sample_icustays.csv
-│   │   ├── sample_chartevents.csv
-│   │   └── ...
-│   │
-│   ├── unit/
-│   │   ├── bronze/
-│   │   │   ├── test_ingest.py
-│   │   │   └── test_schema.py
-│   │   ├── silver/
-│   │   │   ├── test_patient_master.py
-│   │   │   ├── test_vital_signs.py
-│   │   │   ├── test_mapping.py
-│   │   │   └── test_unit_conversion.py
-│   │   └── gold/
-│   │       ├── test_vital_features.py
-│   │       ├── test_time_windows.py
-│   │       └── test_unify.py
-│   │
-│   ├── integration/
-│   │   ├── test_bronze_to_silver.py
-│   │   ├── test_silver_to_gold.py
-│   │   └── test_full_pipeline_smoke.py
-│   │
-│   └── data_quality/
-│       └── test_great_expectations_suites.py
-│
 ├── scripts/
 │   ├── run_bronze.py
 │   ├── run_silver.py
