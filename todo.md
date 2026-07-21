@@ -4,6 +4,88 @@ Ngày 2: Thực hiện tổ chức thư mục, configs, hoàn thành Tầng Bron
 
 Ngày 3: Thực hiện triển khai trên local
 
+# MIMIC Feature Store
+
+Pipeline dữ liệu **Bronze → Silver → Gold** cho MIMIC-IV, xây dựng một **Feature Store** dùng
+để huấn luyện các mô hình ML lâm sàng (dự đoán tử vong, AKI theo KDIGO, sepsis, shock, thời
+gian nằm ICU kéo dài, tái nhập viện 30 ngày).
+
+Dự án này là bản triển khai có cấu trúc production-grade của notebook demo gốc
+(`notebooks/01_mimic_iv_pipeline_demo_updated.ipynb`), kết hợp:
+
+| Công cụ | Vai trò |
+|---|---|
+| **DuckDB** | Công cụ xử lý OLAP out-of-core chính, chạy toàn bộ SQL biến đổi dữ liệu |
+| **Hydra** | Quản lý cấu hình (đường dẫn, itemid mapping, cửa sổ thời gian, ngưỡng lâm sàng) |
+| **Prefect** | Orchestration — điều phối, retry, logging cho từng flow/task |
+| **Great Expectations** | Kiểm định chất lượng dữ liệu (Data Quality Gate) sau tầng Silver |
+| **dbt-duckdb** | Bản thay thế SQL-first tùy chọn cho tầng Gold (song song với bản Python) |
+
+## Kiến trúc 3 tầng
+
+```
+data/raw/*.csv.gz          (MIMIC-IV gốc)
+      │  bronze/ingest.py — đọc CSV.gz, ép kiểu, ghi Parquet (bucketed cho bảng lớn)
+      ▼
+data/bronze/{module}/{table}/         (1-1 với bảng nguồn MIMIC-IV)
+      │  silver/*.py — Pivot EAV→cột, chuẩn hóa đơn vị, JOIN suy ra stay_id, lọc outlier
+      │  silver/validation/ — Great Expectations checkpoint (chặn dữ liệu bẩn)
+      ▼
+data/silver/core/{patient_master,patients_clean,height_weight}
+data/silver/clinical/{vital_signs,laboratory,medication,outputs,procedures}
+      │  gold/*.py — Tổng hợp đa cửa sổ thời gian (1h/6h/12h/24h), chống Data Leakage
+      ▼
+data/gold/features/patient_feature_store   (Feature Store hợp nhất, bucketed theo stay_id)
+data/gold/labels/target_labels             (6 nhãn ground truth, tách biệt Feature Store)
+```
+
+## Cài đặt
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+make install          # pip install -e ".[dev]" + dbt deps
+cp .env.example .env  # chỉnh MIMIC_SOURCE_DIR trỏ tới thư mục chứa *.csv.gz
+```
+
+## Chạy pipeline
+
+```bash
+make bronze            # chỉ tầng Bronze
+make silver            # chỉ tầng Silver (kèm Great Expectations)
+make gold               # chỉ tầng Gold
+make pipeline           # Bronze -> Silver -> Gold, tự động [SKIP] output đã tồn tại
+make pipeline-force     # ép chạy lại toàn bộ (bỏ qua Idempotency)
+make pipeline-colab     # dùng conf/paths/colab.yaml (Google Colab + Drive)
+```
+
+Override config trực tiếp qua CLI (Hydra):
+
+```bash
+python scripts/run_full_pipeline.py duckdb.memory_limit=4GB time_windows.vital_signs=[6,24]
+```
+
+## Bản thay thế bằng dbt (tùy chọn, chỉ cho tầng Gold)
+
+```bash
+make dbt-run    # dbt run  — build models SQL thay cho src/mimic_pipeline/gold/*.py
+make dbt-test   # dbt test — chạy schema tests + singular tests
+make dbt-docs   # dbt docs generate && serve — xem lineage graph
+```
+
+Xem ghi chú trong `dbt/dbt_project.yml` để biết cách 2 cách tiếp cận (Python vs dbt) liên hệ
+với nhau — khuyến nghị chỉ chọn MỘT cho môi trường production.
+
+## Kiểm thử
+
+```bash
+make test          # toàn bộ test suite (unit + integration + data_quality)
+make test-fast     # bỏ qua test chậm (đánh dấu @pytest.mark.slow)
+```
+
+## Cấu trúc thư mục
+
+Xem `docs/architecture.md` để biết chi tiết luồng dữ liệu, và `docs/data_dictionary.md` /
+`docs/feature_catalog.md` để biết ý nghĩa từng cột trong `patient_feature_store`.
 
 ```
 mimic-feature-store/
