@@ -78,15 +78,6 @@ mimic-feature-store/
 │           ├── flows.py           # Prefect flows (bronze_flow, silver_flow, gold_flow)
 │           └── tasks.py           # Prefect tasks
 │
-├── dbt/                            # nếu tách riêng dbt-duckdb project cho Gold
-│   ├── dbt_project.yml
-│   ├── profiles.yml
-│   ├── models/
-│   │   ├── silver/
-│   │   └── gold/
-│   ├── tests/                     # dbt tests (schema tests, custom tests)
-│   └── macros/
-│
 ├── great_expectations/             # GE project (nếu không nhúng trong src/)
 │   ├── great_expectations.yml
 │   ├── expectations/
