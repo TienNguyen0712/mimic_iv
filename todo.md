@@ -9,8 +9,9 @@ Ngày 3: Thực hiện triển khai trên local
 mimic-feature-store/
 │
 ├── README.md
-├── pyproject.toml                 # hoặc requirements.txt / poetry.lock
-├── Makefile                       # các lệnh tắt: make bronze, make silver, make gold, make test
+├── requirements.txt               # hoặc  / poetry.lock
+├── Makefile
+├── setup.py                       # các lệnh tắt: make bronze, make silver, make gold, make test
 ├── .env.example                   # biến môi trường (đường dẫn data, config Prefect...)
 ├── .gitignore
 │
