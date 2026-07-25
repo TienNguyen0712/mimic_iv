@@ -5,7 +5,7 @@
 [![Data Transformation](https://img.shields.io/badge/Transformation-dbt--duckdb-red.svg)](https://docs.getdbt.com/)
 [![Orchestration](https://img.shields.io/badge/Orchestration-Prefect-24c2a1.svg)](https://www.prefect.io/)
 [![Data Quality](https://img.shields.io/badge/Quality-Great%20Expectations-green.svg)](https://greatexpectations.io/)
-[![Architecture](https://img.shields.io/badge/Architecture-Medallion%20(Bronze%E2%86%92Silver%E2%86%92Gold)-gold.svg)]()
+[![Architecture](https://img.shields.io/badge/Architecture-Medallion%20-gold.svg)]()
 
 ## 🎯 1. Mục tiêu & Sứ mệnh Dự án (Project Mission)
 Dự án tập trung xây dựng một pipeline xử lý dữ liệu quy mô lớn theo kiến trúc **Medallion (Bronze → Silver → Gold)** nhằm chuẩn hóa dữ liệu lâm sàng từ bộ cơ sở dữ liệu hồi sức cấp cứu chuyên sâu **MIMIC-IV (v3.1)** thành một **Clinical Feature Store** phẳng, có khả năng tái sử dụng linh hoạt cho nhiều bài toán Machine Learning khác nhau trong y tế.
